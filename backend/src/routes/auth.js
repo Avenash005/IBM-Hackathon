@@ -1,62 +1,12 @@
 import express from 'express';
 import passport from 'passport';
-import { Strategy as GitHubStrategy } from 'passport-github2';
 import User from '../models/User.js';
 import { generateToken, protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Configure GitHub OAuth Strategy
-passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: process.env.GITHUB_CALLBACK_URL || 'http://localhost:3000/api/auth/github/callback'
-  },
-  async (accessToken, refreshToken, profile, done) => {
-    try {
-      // Check if user already exists
-      let user = await User.findOne({ githubId: profile.id });
-
-      if (user) {
-        // Update existing user
-        user.githubAccessToken = accessToken;
-        user.lastLoginAt = new Date();
-        user.avatar = profile.photos[0]?.value || user.avatar;
-        user.displayName = profile.displayName || user.displayName;
-        await user.save();
-      } else {
-        // Create new user
-        user = await User.create({
-          githubId: profile.id,
-          username: profile.username,
-          email: profile.emails[0]?.value || `${profile.username}@github.com`,
-          displayName: profile.displayName || profile.username,
-          avatar: profile.photos[0]?.value,
-          githubAccessToken: accessToken
-        });
-      }
-
-      return done(null, user);
-    } catch (error) {
-      return done(error, null);
-    }
-  }
-));
-
-// Serialize user
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-// Deserialize user
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (error) {
-    done(error, null);
-  }
-});
+// Note: Passport strategy is now configured in index.js
+// This ensures it's set up before routes are registered
 
 /**
  * @route   GET /api/auth/github

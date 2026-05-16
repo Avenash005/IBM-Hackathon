@@ -9,6 +9,7 @@
     "dev": "nodemon src/index.js",
     "simple": "node src/index-simple.js",
     "dev:simple": "nodemon src/index-simple.js",
+    "build": "npm install",
     "test": "jest"
   },
   "keywords": ["github", "pr-review", "ai", "ibm-bob"],
