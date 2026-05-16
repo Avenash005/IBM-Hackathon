@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -12,6 +13,9 @@ export default {
         success: '#28a745',
         warning: '#ffc107',
         danger: '#dc3545',
+      },
+      animation: {
+        'fadeIn': 'fadeIn 0.3s ease-out',
       }
     },
   },

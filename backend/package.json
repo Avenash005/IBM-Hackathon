@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "simple": "node src/index-simple.js",
+    "dev:simple": "nodemon src/index-simple.js",
     "test": "jest"
   },
   "keywords": ["github", "pr-review", "ai", "ibm-bob"],
@@ -20,7 +22,15 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "parse-diff": "^0.11.1",
-    "simple-git": "^3.21.0"
+    "simple-git": "^3.21.0",
+    "mongoose": "^8.0.3",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "express-session": "^1.17.3",
+    "cookie-parser": "^1.4.6",
+    "express-validator": "^7.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

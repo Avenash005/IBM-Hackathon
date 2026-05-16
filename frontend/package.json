@@ -1,7 +1,7 @@
 {
   "name": "pr-buddy-frontend",
-  "version": "1.0.0",
-  "description": "PR Buddy Dashboard - AI-powered PR review interface",
+  "version": "2.0.0",
+  "description": "PR Buddy Dashboard - AI-powered PR review interface with authentication",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,7 +14,10 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.1",
     "axios": "^1.6.2",
-    "lucide-react": "^0.294.0"
+    "lucide-react": "^0.294.0",
+    "@tanstack/react-query": "^5.14.2",
+    "zustand": "^4.4.7",
+    "react-hot-toast": "^2.4.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
