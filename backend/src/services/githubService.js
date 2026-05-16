@@ -102,42 +102,49 @@ class GitHubService {
    */
   async findRelevantFiles(owner, repo, changedFiles, ref) {
     const relevantPaths = new Set();
-    const parsedFiles = parseDiff(changedFiles);
+    
+    try {
+      const parsedFiles = parseDiff(changedFiles);
 
-    // Analyze each changed file to find related files
-    for (const file of parsedFiles) {
-      if (!file.to || file.to === '/dev/null') continue;
+      // Analyze each changed file to find related files
+      for (const file of parsedFiles) {
+        if (!file.to || file.to === '/dev/null') continue;
 
-      const filePath = file.to;
-      const dir = filePath.substring(0, filePath.lastIndexOf('/'));
+        const filePath = file.to;
+        const dir = filePath.substring(0, filePath.lastIndexOf('/'));
 
-      // Add test file if exists
-      const testPath = this.getTestFilePath(filePath);
-      if (testPath) relevantPaths.add(testPath);
+        // Add test file if exists
+        const testPath = this.getTestFilePath(filePath);
+        if (testPath) relevantPaths.add(testPath);
 
-      // Add files in same directory (limit to 2)
-      try {
-        const { data: dirContents } = await this.octokit.repos.getContent({
-          owner,
-          repo,
-          path: dir || '.',
-          ref
-        });
+        // Add files in same directory (limit to 2)
+        try {
+          const { data: dirContents } = await this.octokit.repos.getContent({
+            owner,
+            repo,
+            path: dir || '.',
+            ref
+          });
 
-        if (Array.isArray(dirContents)) {
-          dirContents
-            .filter(item => item.type === 'file' && item.path !== filePath)
-            .slice(0, 2)
-            .forEach(item => relevantPaths.add(item.path));
+          if (Array.isArray(dirContents)) {
+            dirContents
+              .filter(item => item.type === 'file' && item.path !== filePath)
+              .slice(0, 2)
+              .forEach(item => relevantPaths.add(item.path));
+          }
+        } catch (error) {
+          // Directory might not exist or be accessible
+          console.warn(`Could not access directory ${dir}:`, error.message);
         }
-      } catch (error) {
-        // Directory might not exist or be accessible
       }
-    }
 
-    // Limit to 5 most relevant files
-    const paths = Array.from(relevantPaths).slice(0, 5);
-    return this.getMultipleFiles(owner, repo, paths, ref);
+      // Limit to 5 most relevant files
+      const paths = Array.from(relevantPaths).slice(0, 5);
+      return this.getMultipleFiles(owner, repo, paths, ref);
+    } catch (error) {
+      console.error('Error finding relevant files:', error);
+      return []; // Return empty array on error instead of crashing
+    }
   }
 
   /**

@@ -75,11 +75,17 @@ router.get('/github',
  * @access  Public
  */
 router.get('/github/callback',
-  passport.authenticate('github', { 
+  passport.authenticate('github', {
     failureRedirect: `${process.env.FRONTEND_URL}/login?error=auth_failed`,
-    session: false 
+    session: false
   }),
   (req, res) => {
+    // Check if user exists
+    if (!req.user || !req.user._id) {
+      console.error('Auth callback: User not found in request');
+      return res.redirect(`${process.env.FRONTEND_URL}/login?error=user_not_found`);
+    }
+
     // Generate JWT token
     const token = generateToken(req.user._id);
 

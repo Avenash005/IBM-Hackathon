@@ -19,8 +19,10 @@ function verifySignature(req, res, next) {
     return next();
   }
 
+  // Use rawBody that was captured in the middleware
+  const payload = req.rawBody || JSON.stringify(req.body);
   const hmac = crypto.createHmac('sha256', secret);
-  const digest = 'sha256=' + hmac.update(JSON.stringify(req.body)).digest('hex');
+  const digest = 'sha256=' + hmac.update(payload).digest('hex');
 
   if (signature !== digest) {
     return res.status(401).json({ error: 'Invalid signature' });

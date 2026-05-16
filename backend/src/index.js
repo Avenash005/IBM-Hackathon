@@ -13,10 +13,12 @@ import repositoryRoutes from './routes/repositories.js';
 // Load environment variables
 dotenv.config();
 
-// Connect to database
-connectDB();
-
 const app = express();
+
+// Connect to database (async, but don't block server startup)
+connectDB().catch(err => {
+  console.error('Failed to connect to database:', err.message);
+});
 const PORT = process.env.PORT || 3000;
 
 // Middleware
