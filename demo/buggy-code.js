@@ -106,6 +106,25 @@ function saveCredentials(username, password) {
   localStorage.setItem('password', password);  // CRITICAL SECURITY ISSUE
 }
 
+function processPayment(userId, amount) {
+  // SQL Injection vulnerability
+  const query = `SELECT * FROM users WHERE id = ${userId}`;
+  const user = db.query(query);
+  
+  // Missing error handling
+  const result = paymentAPI.charge(amount);
+  return result;
+}
+
+// Untested function
+function calculateTotal(items) {
+  let total = 0;
+  for (let i = 0; i < items.length; i++) {
+    total += items[i].price;
+  }
+  return total;
+}
+
 // MISSING: No tests for any of these functions!
 // PR Buddy should suggest test stubs for all of them
 
